@@ -32,7 +32,7 @@ def analyze_image_with_llm(image_path, prompt):
                     ]
                 }
             ],
-            "max_tokens": 1000
+            "max_tokens": 3000
         }
 
         headers = {

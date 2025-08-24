@@ -1,3 +1,4 @@
+from flask import app
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -25,10 +26,11 @@ def check_for_errors(driver):
         print("There is no error message on the page")
         return True 
 
-def crawler():
-    csv_file_path = r"D:\User\Adison\desktop\MBweb\uploads\Adjusted_Label_Table.csv"
+def crawler(csv_file_path):
+    csv_file_path = os.path.abspath(csv_file_path)
     data_prefix = os.path.splitext(os.path.basename(csv_file_path))[0]
-    output_folder = r"D:\User\Adison\desktop\metaboanalyst_download"
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    output_folder = os.path.join(BASE_DIR, "download")
     os.makedirs(output_folder, exist_ok=True)
     options = webdriver.ChromeOptions()
     options.add_argument('--start-maximized')
