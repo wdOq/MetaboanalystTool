@@ -44,7 +44,7 @@ def run_analyst(task_id):
         tasks[task_id]['result'] = f"錯誤：{str(e)}"
 @app.route('/')
 def Home():
-    return render_template('form.html')
+    return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload():
