@@ -1,0 +1,38 @@
+# 使用官方 Python 3.11
+FROM python:3.11-slim
+
+# 安裝 Chrome 與 Chromedriver
+RUN apt-get update && apt-get install -y \
+    wget unzip xvfb libnss3 libx11-xcb1 libxcomposite1 libxcursor1 \
+    libxdamage1 libxext6 libxi6 libxtst6 libgtk-3-0 libxrandr2 \
+    libasound2 libpangocairo-1.0-0 fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
+
+# 安裝 Chrome
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && apt install -y ./google-chrome-stable_current_amd64.deb \
+    && rm google-chrome-stable_current_amd64.deb
+
+# 安裝 Chromedriver
+RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d '.' -f1) \
+    && wget -q https://chromedriver.storage.googleapis.com/${CHROME_VERSION}.0.0/chromedriver_linux64.zip \
+    && unzip chromedriver_linux64.zip -d /usr/local/bin/ \
+    && rm chromedriver_linux64.zip \
+    && chmod +x /usr/local/bin/chromedriver
+
+# 設定工作目錄
+WORKDIR /app
+
+# 複製程式碼
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+# 建立上傳與下載資料夾
+RUN mkdir -p uploads download
+
+# 暴露 5000 port
+EXPOSE 5000
+
+# 啟動 Flask
+CMD ["python", "app.py"]
